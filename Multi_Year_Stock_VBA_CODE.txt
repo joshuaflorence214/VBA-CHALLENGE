@@ -1,0 +1,95 @@
+Sub PageToPage()
+    Dim sh As Worksheet
+    Application.ScreenUpdating = False
+    For Each sh In Worksheets
+        sh.Select
+        Call Stocks
+    Next
+    Application.ScreenUpdating = True
+End Sub
+
+
+Sub Stocks()
+
+Dim OpenValue As Double
+Dim CloseValue As Double
+Dim Ticker As String
+Dim YearChange As Double
+Dim PercentChange As Double
+Dim Sheet1 As Worksheet
+Dim Sheet2 As Worksheet
+Dim Sheet3 As Worksheet
+
+
+Set Sheet1 = Worksheets("A")
+Set Sheet2 = Worksheets("B")
+Set Sheet3 = Worksheets("C")
+
+
+
+lastrow = Cells(Rows.Count, 1).End(xlUp).Row
+NewRow = 2
+
+
+    For i = 2 To lastrow
+    
+        Range("I1:L1").Value = Array("Ticker", "Year Change", "Percent Change", "Total Stock Volume")
+        
+    
+        If Cells(i, 1).Value = Cells(i + 1, 1).Value Then
+        Ticker = Ticker + Cells(i, 1).Value
+        StockVolume = StockVolume + Cells(i, 7)
+        OpenValue = OpenValue + Cells(i, 3)
+        CloseValue = CloseValue + Cells(i, 6)
+        YearChange = CloseValue - OpenValue
+        PercentChange = ((CloseValue - OpenValue) / OpenValue) * 100
+        Cells(i, 11).NumberFormat = "0.00%"
+        
+        
+        
+        
+        
+        Else
+        
+            OpenValue = OpenValue + Cells(i, 3).Value
+            CloseValue = Cells(i, 6).Value
+            Ticker = Cells(i, 1).Value
+            OpenValue = Cells(i, 3).Value
+            CloseValue = Cells(i, 6).Value
+            Cells(NewRow, 9).Value = Ticker
+            Cells(NewRow, 10).Value = YearChange
+            Cells(NewRow, 11).Value = PercentChange
+            Cells(NewRow, 12).Value = StockVolume
+            Ticker = 0
+            NewRow = NewRow + 1
+            
+        End If
+         
+         If Cells(i, 10).Value > 0 Then
+            Cells(i, 10).Interior.ColorIndex = 4
+         
+         Else
+            Cells(i, 10).Interior.ColorIndex = 3
+         
+         End If
+         
+         For Each ws In Worksheets
+         
+         Range("I1:L1").Value = Array("Ticker", "Year Change", "Percent Change", "Total Stock Volume")
+         
+         If ws.Cells(i, 10).Value > 0 Then
+            ws.Cells(i, 10).Interior.ColorIndex = 4
+         
+         Else
+            ws.Cells(i, 10).Interior.ColorIndex = 3
+         
+         End If
+         
+         Next ws
+            
+            
+            
+    Next i
+    
+End Sub
+
